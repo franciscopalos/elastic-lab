@@ -1,0 +1,49 @@
+{
+  "id": "horacreacion-event-ingested",
+  "version": "7.17.4",
+  "create_time": 1679692113293,
+  "source": {
+    "index": [
+      "redis-*"
+    ],
+    "query": {
+      "match_all": {}
+    }
+  },
+  "dest": {
+    "index": "horacreacion-event-ingested"
+  },
+  "frequency": "1m",
+  "sync": {
+    "time": {
+      "field": "event.ingested",
+      "delay": "60s"
+    }
+  },
+  "pivot": {
+    "group_by": {
+      "horacreacion": {
+        "date_histogram": {
+          "field": "horacreacion",
+          "fixed_interval": "5m"
+        }
+      }
+    },
+    "aggregations": {
+      "@timestamp.value_count": {
+        "value_count": {
+          "field": "horacreacion"
+        }
+      }
+    }
+  },
+  "settings": {
+    "max_page_search_size": 500
+  },
+  "retention_policy": {
+    "time": {
+      "field": "@timestamp",
+      "max_age": "7d"
+    }
+  }
+}
