@@ -9,8 +9,8 @@ services:
       - discovery.seed_hosts=es02
       - cluster.initial_master_nodes=es01,es02
       - bootstrap.memory_lock=true
-      #- http.max_content_length=5mb
-      - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
+      - http.max_content_length=5mb
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
       memlock:
         soft: -1
@@ -30,7 +30,7 @@ services:
       - discovery.seed_hosts=es01
       - cluster.initial_master_nodes=es01,es02
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
       memlock:
         soft: -1
@@ -51,35 +51,33 @@ services:
       - 5601:5601
     networks:
       - elastic
-  logstash:
-    depends_on: 
-      - es01
-    image: docker.elastic.co/logstash/logstash:7.17.4
-    container_name: logstash
-    volumes: 
-      - ./logstash-settings/logstash-input-redis-output-elatic.config:/usr/share/logstash/pipeline/logstash.conf:ro
-      - ./logstash-settings/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
-     
-    networks:
-      - elastic     
-     
+  # logstash:
+  #   depends_on: 
+  #     - es01
+  #   image: docker.elastic.co/logstash/logstash:7.17.4
+  #   container_name: logstash
+  #   volumes: 
+  #     - ./logstash-settings/logstash-input-file-output-elastic.config:/usr/share/logstash/pipeline/logstash.conf:ro
+  #     - ./logstash-settings/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+  #     - ./patterns:/usr/share/logstash/config/patterns:rw
+  #     - ./MensajeMQEjemplo:/var/log/MensajeMQEjemplo:ro
+  #   networks:
+  #     - elastic     
   #   ports: 
   #     - 9600:9600
+  # redis:
+  #   depends_on: 
+  #     - es01
+  #   image: redis:5.0
+  #   container_name: redis
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   ports:
+  #     - 6379:6379
   #   networks:
-  #     - elastic
-  redis:
-    depends_on: 
-      - es01
-    image: redis:5.0
-    container_name: redis
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    ports:
-      - 6379:6379
-    networks:
-      - elastic  
+  #     - elastic  
 
 volumes:
   data01:
